@@ -1,0 +1,86 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+# Create your models here.
+
+
+class Brand(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Vendor(models.Model):
+    vendor_name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.vendor_name
+
+
+class Product(models.Model):
+    PRODUCT_TYPES = (
+        ('stock', 'Stock'),
+        ('service', 'Service'),
+        ('bundle', 'Bundle'),
+    )
+
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+
+    product_code = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='stock')
+    stock = models.IntegerField(default=0)
+    image_url = models.URLField(blank=True, null=True)
+
+    selling_price = models.DecimalField(max_digits=12, decimal_places=2)
+    capital_price = models.DecimalField(max_digits=12, decimal_places=2)
+    is_active = models.BooleanField(default=True)
+
+    vendors = models.ManyToManyField("Vendor", through="ProductVendor", related_name="products")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.product_code} - {self.name}"
+
+
+class ProductVendor(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    vendor_sku = models.CharField(max_length=100, blank=True, null=True)
+    vendor_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    lead_time_days = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('product', 'vendor')
+
+    def __str__(self):
+        return f"{self.vendor.vendor_name} → {self.product.name}"
+
+
+class ProductChangeLog(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="change_logs")
+    changed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    field_name = models.CharField(max_length=100)
+    old_value = models.TextField(blank=True, null=True)
+    new_value = models.TextField(blank=True, null=True)
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.product_code} ({self.field_name})"

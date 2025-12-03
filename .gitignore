@@ -1,0 +1,29 @@
+# Python Bytecode Files (Cache)
+# Menghindari file cache Python (.pyc) dan folder __pycache__
+*.pyc
+__pycache__/
+
+# Database
+# Menghindari file database SQLite lokal
+db.sqlite3
+
+# Dependency Management
+# Menghindari direktori virtual environment (venv)
+venv/
+
+# Django-spesific files
+# Menghindari file media yang diupload
+/media/
+
+# IDE/Editor temporary files (Optional, tergantung IDE Anda)
+.idea/
+.vscode/
+*.swp
+*~
+
+# Django-spesific
+# Menghindari folder migrasi yang belum di-squash,
+# tapi biasanya lebih baik mengizinkan file migrasi awal (0001_initial.py)
+# Jika Anda ingin membersihkan semua file migrasi yang tergenerate:
+# */migrations/*
+# *!*/migrations/__init__.py
