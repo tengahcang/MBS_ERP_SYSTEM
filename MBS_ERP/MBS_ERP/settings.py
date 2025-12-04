@@ -11,9 +11,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,7 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^bn1(d6)ed@is!-21wumj18$e@i(v#vbo#bjty1uf*rcrq6fse'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -57,6 +67,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / "templates"],
+        # 'DIRS' : [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,14 +92,25 @@ WSGI_APPLICATION = 'MBS_ERP.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'mbs_erp',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mbs_erp',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
@@ -127,6 +149,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

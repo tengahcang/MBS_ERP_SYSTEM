@@ -3,6 +3,8 @@
 *.pyc
 __pycache__/
 
+.env
+
 # Database
 # Menghindari file database SQLite lokal
 db.sqlite3
