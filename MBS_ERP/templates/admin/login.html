@@ -10,114 +10,187 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/metropolis-2" rel="stylesheet">
 
     <style>
-        /* 3. Terapkan Font Roboto dan Gaya Halaman */
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #FFEFEF; /* Warna latar belakang pink muda */
+            font-family: 'Metropolis', sans-serif;
+            background-color: #FFEFEF; /* Warna latar pink muda sesuai desain */
             height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Mencegah scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Putih di Atas */
+        .top-header {
+            background-color: white;
+            padding: 15px 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            width: 100%;
+            z-index: 10;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 24px;
+            color: #E53935; /* Warna logo */
+            border: 2px solid #E53935;
+            padding: 2px 8px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        /* Container Utama */
+        .main-container {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
-        }
-        
-        .login-card {
             width: 100%;
-            max-width: 400px;
+            padding: 0 5%;
+        }
+
+        /* Card Login */
+        .login-card {
             border: none;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            padding: 2.5rem; /* Padding di dalam card */
+            border-radius: 20px; /* Sudut membulat besar */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
         }
 
         .login-title {
             font-weight: 700;
-            font-size: 1.75rem;
-            color: #333;
             text-align: center;
             margin-bottom: 2rem;
+            color: #333;
         }
 
+        /* Form Controls */
         .form-label {
             font-weight: 700;
-            color: #333;
-            margin-bottom: 0.5rem;
             font-size: 0.9rem;
+            color: #333;
         }
 
         .form-control {
-            padding: 0.75rem 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
+            padding: 10px 15px;
             border: 1px solid #ced4da;
+            background-color: #fff;
         }
 
         .form-control:focus {
-            border-color: #E53935; /* Warna border saat fokus */
-            box-shadow: 0 0 0 0.2rem rgba(229, 57, 53, 0.25);
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+            border-color: #E53935;
         }
-        
+
+        /* Tombol Login Merah */
         .btn-login {
-            background-color: #E53935; /* Warna tombol login yang diminta */
-            border: none;
+            background-color: #E53935; /* Warna Merah Figma */
             color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 5px;
-            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
             font-size: 1rem;
-            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background 0.3s;
         }
 
         .btn-login:hover {
-            background-color: #c62828; /* Warna sedikit lebih gelap saat hover */
+            background-color: #c62828;
+            color: white;
         }
 
-        /* Hapus link "Kembali ke Website Utama" */
-        .text-center.mt-3 {
-            display: none;
+        /* Gambar Ilustrasi */
+        .illustration-col {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .illustration-img {
+            max-width: 100%;
+            height: auto;
+            /* Karena kita belum punya file ilustrasi terpisah, 
+               ini hanya placeholder agar layout pas */
+        }
+
+        /* Responsif untuk Mobile */
+        @media (max-width: 768px) {
+            .illustration-col {
+                display: none; /* Sembunyikan gambar di layar kecil */
+            }
+            .top-header {
+                padding: 15px 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="card login-card bg-white">
-        <h2 class="login-title">Login</h2>
-        
-        {% if form.errors and not form.non_field_errors %}
-            <div class="alert alert-danger p-2 small mb-3">
-                Username atau password salah.
-            </div>
-        {% endif %}
+    <div class="top-header">
+        <img src="{% static 'img/logo_mbs.png' %}" 
+             alt="MBS Logo" 
+             style="height: 40px; width: auto;">
+    </div>
 
-        {% if form.non_field_errors %}
-            <div class="alert alert-danger p-2 small mb-3">
-                {% for error in form.non_field_errors %}
-                    {{ error }}
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <form action="{{ app_path }}" method="post" id="login-form">
-            {% csrf_token %}
+    <div class="container-fluid main-container">
+        <div class="row w-100 align-items-center">
             
-            <div class="mb-4">
-                <label for="id_username" class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" 
-                       id="id_username" required autofocus>
+            <div class="col-md-5 d-flex justify-content-center justify-content-md-end pe-md-5">
+                <div class="card login-card bg-white">
+                    <h2 class="login-title">Log in</h2>
+                    
+                    {% if form.errors and not form.non_field_errors %}
+                        <div class="alert alert-danger p-2 small mb-3">
+                            Username atau password salah.
+                        </div>
+                    {% endif %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger p-2 small mb-3">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form action="{{ app_path }}" method="post" id="login-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_username" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" 
+                                   id="id_username" required autofocus>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" 
+                                   id="id_password" required>
+                        </div>
+
+                        <div class="d-grid pt-2">
+                            <button type="submit" class="btn btn-login">Login</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="mb-4">
-                <label for="id_password" class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" 
-                       id="id_password" required>
+            <div class="col-md-7 illustration-col">
+                <img src="{% static 'img/Honeywell_Indonesia.svg' %}" 
+                     alt="Security Illustration" 
+                     class="illustration-img"
+                     style="max-height: 500px;">
             </div>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-login">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
 
 </body>
