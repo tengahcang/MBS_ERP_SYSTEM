@@ -1,0 +1,258 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block content %}
+
+<style>
+    /* =========================================
+       1. LAYOUT & CONTAINER
+       ========================================= */
+    #content-main { border: none !important; background: transparent !important; padding: 0 !important; }
+    #content > h1 { display: none !important; }
+    .module, .results { border: none !important; background: transparent !important; }
+
+    .content-card {
+        background: white; 
+        border-radius: 12px; /* Radius lebih halus */
+        box-shadow: 0 5px 20px rgba(0,0,0,0.03); /* Bayangan lebih soft */
+        padding: 30px; 
+        margin-top: 20px;
+        border: 1px solid #f0f0f0; /* Border tipis di luar */
+    }
+
+    /* =========================================
+       2. HEADER & TOMBOL (TOP BAR)
+       ========================================= */
+    .header-row {
+        display: flex; justify-content: space-between; align-items: center;       
+        margin-bottom: 25px; margin-top: 10px;
+    }
+
+    .header-row h2 {
+        margin: 0; 
+        color: #2c3e50; 
+        font-weight: 800; 
+        font-size: 1.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    /* Tombol Tambah (Gradient Red) */
+    .btn-red {
+        background: linear-gradient(135deg, #E74C3C 0%, #c0392b 100%);
+        color: white !important; border: none;
+        padding: 10px 25px; border-radius: 8px; text-decoration: none;
+        font-size: 14px; font-weight: 600; 
+        display: inline-flex; align-items: center; gap: 8px;
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-red:hover { 
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+        color: white !important;
+    }
+
+    /* =========================================
+       3. SEARCH & TOOLBAR
+       ========================================= */
+    .toolbar-custom {
+        background: white; 
+        padding-bottom: 20px;
+        display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 20px;
+    }
+
+    .search-box-custom { position: relative; }
+    .search-box-custom input {
+        padding: 12px 20px; 
+        border: 1px solid #e0e0e0; 
+        border-radius: 8px; 
+        outline: none; width: 320px; padding-right: 45px;
+        font-size: 14px; transition: 0.3s;
+        background-color: #fcfcfc;
+        
+        /* --- [FIX] Agar teks yang diketik terlihat --- */
+        color: #333 !important; 
+    }
+    .search-box-custom input:focus {
+        border-color: #E74C3C;
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    .search-btn-icon {
+        position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+        color: #999; background: none; border: none; cursor: pointer;
+        font-size: 16px;
+    }
+    .search-btn-icon:hover { color: #E74C3C; }
+
+    /* =========================================
+       4. TABEL DESAIN BARU (Modern SaaS)
+       ========================================= */
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    
+    /* --- HEADER TABEL (Thead) --- */
+    thead th, thead th.sorted {
+        background-color: #F8F9FA !important; /* Latar Abu-abu Lembut */
+        border-bottom: 1px solid #dfe6e9 !important;
+        border-top: 1px solid #f0f0f0 !important;
+        color: #637381 !important; /* Teks Abu Tua */
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        font-size: 11px !important;
+        letter-spacing: 0.8px;
+        padding: 18px 20px !important;
+    }
+
+    /* Sorting Link di Header */
+    thead th a, thead th span { 
+        color: #637381 !important; text-decoration: none; 
+    }
+    thead th a:hover { color: #E74C3C !important; }
+
+    /* --- ISI TABEL (Tbody) --- */
+    tbody tr { transition: background-color 0.2s ease; }
+    
+    /* Hover Row Effect (Biru Tipis Sangat Muda) */
+    tbody tr:hover td, tbody tr:hover th { 
+        background-color: #f8faff !important; 
+    }
+
+    tbody td, tbody th {
+        padding: 20px !important; 
+        border-bottom: 1px solid #f0f0f0 !important;
+        color: #2c3e50; 
+        font-size: 14px; 
+        vertical-align: middle;
+        background: white; /* Default Putih */
+    }
+
+    /* Hapus garis di baris terakhir agar rapi */
+    tbody tr:last-child td, tbody tr:last-child th { border-bottom: none !important; }
+
+    /* Styling Teks Link (Nama Brand) */
+    tbody th a, tbody td a {
+        color: #2c3e50 !important; font-weight: 600; text-decoration: none;
+    }
+    tbody th a:hover, tbody td a:hover {
+        color: #E74C3C !important; text-decoration: none;
+    }
+
+    /* =========================================
+       FIX TOMBOL AKSI (MENJADI KOTAK)
+       ========================================= */
+    tbody td a.btn {
+        /* 1. Jadikan Flexbox agar ikon di tengah */
+        display: inline-flex !important; 
+        align-items: center !important;
+        justify-content: center !important;
+        
+        /* 2. Tentukan ukuran fix (Lebar = Tinggi) */
+        width: 32px !important;  
+        height: 32px !important; 
+
+        /* 3. Reset padding agar ukuran tidak melar */
+        padding: 0 !important;   
+
+        /* Style tambahan */
+        border-radius: 6px !important; /* Sudut sedikit rounded. Ubah jadi 0 jika ingin kotak tajam */
+        color: white !important;
+        text-decoration: none !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-right: 5px; /* Jarak antar tombol */
+        transition: all 0.2s ease;
+    }
+
+    /* Efek Hover */
+    tbody td a.btn:hover {
+        transform: translateY(-2px); /* Naik sedikit saat dihover */
+        box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        color: white !important;
+    }
+
+    /* Pastikan ukuran font ikon pas di dalam kotak */
+    tbody td a.btn i {
+        font-size: 14px !important;
+    }
+    /* Hilangkan Elemen Sampah */
+    .action-checkbox, .action-checkbox-column, .sortoptions, .clear, #changelist div.clear { 
+        display: none !important; 
+    }
+
+    /* =========================================
+       5. PAGINATION
+       ========================================= */
+    .paginator {
+        border-top: 1px solid #f0f0f0 !important; 
+        margin-top: 0 !important; 
+        padding: 20px 0 0 0 !important;
+        text-align: right !important; 
+        background: transparent !important;
+        color: #8898aa !important; font-size: 13px; font-weight: 500;
+    }
+    .paginator a { 
+        color: #555 !important; 
+        background: #f8f9fa;
+        padding: 5px 10px;
+        border-radius: 6px;
+        margin-left: 5px;
+        border: 1px solid #eee;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+    .paginator a:hover { 
+        background: #E74C3C; 
+        color: white !important; 
+        border-color: #E74C3C;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="header-row">
+        <h2>Master Data {{ cl.opts.verbose_name_plural|capfirst }}</h2>
+        {% if has_add_permission %}
+            <a href="{% url cl.opts|admin_urlname:'add' %}" class="btn-red">
+                <i class="fas fa-plus"></i> Tambah Data
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="content-card">
+        
+        <div class="toolbar-custom">
+            <div>
+                <span style="font-size:13px; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
+                    Total Data: <span style="color:#333;">{{ cl.result_count }}</span>
+                </span>
+            </div>
+            
+            {% block search %}
+            <div class="search-box-custom">
+                <form id="changelist-search" method="get" style="margin:0;">
+                    {% for pair in cl.params.items %}
+                        {% if pair.0 != 'q' %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>{% endif %}
+                    {% endfor %}
+                    <input type="text" name="q" value="{{ cl.query|default:'' }}" 
+                           placeholder="Cari data...">
+                    <button type="submit" class="search-btn-icon"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            {% endblock %}
+        </div>
+
+        <form id="changelist-form" method="post" novalidate>{% csrf_token %}
+            {% if cl.formset %}<div>{{ cl.formset.management_form }}</div>{% endif %}
+
+            {% block result_list %}
+                {% result_list cl %}
+            {% endblock %}
+
+            {% block pagination %}{% pagination cl %}{% endblock %}
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

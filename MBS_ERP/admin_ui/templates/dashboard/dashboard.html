@@ -1,0 +1,22 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+<p>Selamat datang di Admin UI Custom.</p>
+
+<h3>Model Terdaftar</h3>
+
+<ul>
+    {% for m in models %}
+        <li>
+            <a href="{{ m.url }}">{{ m.object_name }}</a>
+            <small style="color:#666">({{ m.app_label }})</small>
+        </li>
+    {% empty %}
+        <li>Tidak ada model terdaftar.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
