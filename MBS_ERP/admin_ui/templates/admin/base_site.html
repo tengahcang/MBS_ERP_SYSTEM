@@ -61,7 +61,7 @@
 
         /* Logo Area */
         .sidebar-brand {
-            padding: 30px 20px;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -73,6 +73,16 @@
             margin-bottom: 10px;
         }
         .sidebar-brand i { margin-right: 10px; }
+
+        .sidebar-brand .brand-logo {
+            max-width: 80%;      /* Agar tidak melebar melebihi sidebar */
+            max-height: 80px;    /* Batasi tinggi logo */
+            width: auto;         /* Jaga rasio aspek */
+            object-fit: contain; /* Pastikan gambar tidak gepeng */
+            
+            /* Jika logo Anda hitam dan background merah, gunakan filter ini untuk memutihkan (opsional) */
+            /* filter: brightness(0) invert(1); */ 
+        }
 
         /* Menu List */
         .sidebar-menu { 
@@ -220,7 +230,7 @@
 <div class="custom-sidebar">
     
     <a href="{% url 'admin:index' %}" class="sidebar-brand">
-        <i class="fas fa-rocket"></i> MBS ERP
+        <img src="{% static 'img/logo_mbs.png' %}" alt="MBS ERP Logo" class="brand-logo">
     </a>
 
     <ul class="sidebar-menu">
