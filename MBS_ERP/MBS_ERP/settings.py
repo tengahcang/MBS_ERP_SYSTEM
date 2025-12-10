@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'core',
+    # 'core',
+    'products',
+    'vendors'
 ]
 
 MIDDLEWARE = [
@@ -94,28 +96,29 @@ WSGI_APPLICATION = 'MBS_ERP.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'mbs_erp',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306'
-#     }
-# }
-# DATABASE_URL = "postgresql://postgres.yidwywjidboaztjgwlbs:thBVWC5y43rhU944@heast-2.pooler.supabase.com:6543/postgres"
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.kpkmimiftvhmhfbzejbb',
-        'PASSWORD': 'u2IcqtYYKt3jTvGu',
-        'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mbs_erp',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
     }
 }
+
+# DATABASE_URL = "postgresql://postgres.yidwywjidboaztjgwlbs:thBVWC5y43rhU944@heast-2.pooler.supabase.com:6543/postgres"
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres.kpkmimiftvhmhfbzejbb',
+#         'PASSWORD': 'u2IcqtYYKt3jTvGu',
+#         'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # DATABASES = {
 #     "default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))
@@ -171,12 +174,12 @@ USE_TZ = True
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, "MBS_ERP/static"),
 # ]
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storege.CompressedManifestStaticFileStorage"
+# STATIC_URL = '/static/'
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATICFILES_STORAGE = "whitenoise.storege.CompressedManifestStaticFileStorage"
 
 
-# STATIC_URL = 'static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

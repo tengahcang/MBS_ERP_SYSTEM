@@ -29,3 +29,6 @@ venv/
 # Jika Anda ingin membersihkan semua file migrasi yang tergenerate:
 # */migrations/*
 # *!*/migrations/__init__.py
+
+
+.vercel
