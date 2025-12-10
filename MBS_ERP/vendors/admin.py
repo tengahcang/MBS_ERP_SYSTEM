@@ -1,11 +1,17 @@
 from django.contrib import admin
-from .models import Vendor, VendorProductPricingLog, VendorProduct
+from .models import Vendor, VendorProductPricingLog, VendorProduct, VendorContactPerson
 # Register your models here.
+
+class VendorContactPersonInline(admin.TabularInline):
+    model = VendorContactPerson
+    extra = 1
 
 @admin.register(Vendor)
 class VendorAdmin(admin.ModelAdmin):
-    list_display = ("name", "phone", "email", "address", "website_url", "created_at", "updated_at")
-    search_fields = ("name", "phone", "email")
+    list_display = ("name", "email", "address", "website_url", "created_at", "updated_at")
+    search_fields = ("name",)
+    
+    inlines = [VendorContactPersonInline]
 
 
 @admin.register(VendorProduct)

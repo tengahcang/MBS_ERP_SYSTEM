@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import Brand, Category, Product, ProductChangeLog
 from vendors.models import VendorProduct, VendorProductPricingLog
 # Register your models here.
@@ -10,8 +11,12 @@ class ProductVendorInline(admin.TabularInline):
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at", "updated_at")
-    search_fields = ("name",)
+    list_display = ("name", "logo_preview", "created_at", "updated_at")
+
+    def logo_preview(self, obj):
+        if obj.logo:
+            return format_html('<img src="{}" style="height:40px;"/>', obj.logo.url)
+        return "-"
 
 
 @admin.register(Category)
@@ -22,11 +27,23 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("product_code", "name", "brand", "category", "selling_price", "is_active")
+    list_display = ("product_code", "name", "brand", "product_img_display", "category", "selling_price_idr", "is_active")
     list_filter = ("brand", "category", "is_active")
     search_fields = ("product_code", "name")
     
     inlines = [ProductVendorInline]
+    
+    def selling_price_idr(self, obj):
+        if obj.selling_price is None:
+            return "-"
+        return f"Rp {obj.selling_price:,.0f}".replace(",", ".")
+    selling_price_idr.short_description = "Selling Price (IDR)"
+    
+    def product_img_display(self, obj):
+        if obj.product_img:
+            return format_html('<img src="{}" style="height:40px;"/>', obj.product_img.url)
+        return "-"
+    product_img_display.short_description = "Image"
 
     def save_model(self, request, obj, form, change):
         """Log perubahan selling_price."""

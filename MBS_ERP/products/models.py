@@ -13,6 +13,7 @@ class Category(models.Model):
     
 class Brand(models.Model):
     name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to="brands/logos/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -32,10 +33,11 @@ class Product(models.Model):
     product_code = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
+    alt_description = models.TextField(blank=True, null=True)
 
     # product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='stock')
-    stock = models.IntegerField(default=0)
-    image_url = models.URLField(blank=True, null=True)
+    # stock = models.IntegerField(default=0)
+    product_img = models.ImageField(upload_to="product/img/", blank=True, null=True)
 
     selling_price = models.DecimalField(max_digits=12, decimal_places=2)
     # capital_price = models.DecimalField(max_digits=12, decimal_places=2)
