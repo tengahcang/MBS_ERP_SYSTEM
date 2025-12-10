@@ -1,0 +1,410 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script src="{% url 'admin:jsi18n' %}"></script>
+{{ media }}
+{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<style>
+    /* =========================================
+       1. LAYOUT UTAMA & CONTAINER
+       ========================================= */
+    #content-main { border: none !important; background: transparent !important; padding: 0 !important; }
+    #content > h1 { display: none !important; }
+
+    .form-card {
+        background: white; 
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.04);
+        padding: 40px; 
+        margin-top: 20px;
+        border: 1px solid #f0f0f0;
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto; /* Center card */
+    }
+
+    .page-header {
+        margin-bottom: 35px;
+        border-bottom: 2px solid #f5f5f5;
+        padding-bottom: 20px;
+    }
+    .page-header h2 {
+        margin: 0; color: #2c3e50; font-weight: 800; font-size: 1.8rem;
+    }
+
+    /* =========================================
+       2. GRID SYSTEM (KUNCI PERUBAHAN)
+       ========================================= */
+    .module.aligned {
+        display: grid;
+        /* Ubah auto-fit menjadi 1fr 1fr untuk memaksa 2 kolom yang sama lebar */
+        grid-template-columns: 1fr 1fr; 
+        gap: 30px; 
+        width: 100%;
+        align-items: start;
+    }
+
+    .form-row {
+        padding: 0; /* Reset padding default django */
+        border-bottom: none; 
+        display: flex;
+        flex-direction: column; 
+        width: 100%;
+        box-sizing: border-box; 
+    }
+
+    /* Full Width Fields: Description, Alamat, Notes, Keterangan */
+    /* Menambahkan grid-column span 2 agar melebar ke kanan */
+    .field-description, .field-address, .field-notes, .field-keterangan, .field-deskripsi {
+        grid-column: 1 / -1; 
+        width: 100%;
+    }
+
+    /* Label Styling */
+    .form-row label {
+        color: #7f8c8d; /* Warna abu-abu elegan */
+        font-weight: 700; 
+        font-size: 13px;
+        text-transform: uppercase; 
+        letter-spacing: 0.8px;
+        margin-bottom: 12px; 
+        display: block;
+    }
+    .required label:after { content: ' *'; color: #E74C3C; }
+
+    /* =========================================
+       3. INPUT FIELDS
+       ========================================= */
+    input[type=text], input[type=password], input[type=email], input[type=number], input[type=url], 
+    select, .vTextField {
+        width: 100%; max-width: 100%;
+        
+        /* PADDING LEBIH LEGA */
+        padding: 12px 20px; 
+        
+        border: 2px solid #eaeff2;
+        border-radius: 8px;
+        background-color: #fcfcfc;
+        font-size: 15px; color: #2c3e50;
+        
+        /* PENTING: Jarak antar baris agar huruf 'g' aman */
+        line-height: 1.5; 
+
+        box-sizing: border-box; 
+        transition: all 0.3s ease; 
+        
+        /* HAPUS height: 50px; GANTI DENGAN INI: */
+        height: auto; 
+        min-height: 50px; /* Minimal tinggi 50px, tapi bisa membesar jika perlu */
+    }
+
+    textarea {
+        width: 100%; max-width: 100%;
+        padding: 20px;
+        border: 2px solid #eaeff2;
+        border-radius: 8px;
+        background-color: #fcfcfc;
+        font-size: 15px; color: #2c3e50;
+        box-sizing: border-box; 
+        transition: all 0.3s ease;
+        min-height: 150px; resize: vertical;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        border-color: #E74C3C; background-color: white;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.1); outline: none;
+    }
+
+    /* Custom Select Arrow */
+    select {
+        appearance: none; 
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E74C3C%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat; background-position: right 20px top 50%;
+        background-size: 10px auto; padding-right: 40px;
+        cursor: pointer;
+    }
+
+    /* 1. Container Input File (Kotak pembungkusnya) */
+    input[type="file"] {
+        padding: 6px; /* Padding sedikit lebih kecil dari text input biasa */
+        background-color: #fcfcfc;
+        border: 2px solid #eaeff2;
+        border-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        height: auto;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        margin-top: 10px; /* Agar teks nama file rata tengah vertikal */
+
+        color: #2c3e50;  /* Memberi warna gelap (Dark Blue) pada teks nama file */
+        font-weight: 500;
+    }
+
+    /* 2. Tombol "Choose File" itu sendiri */
+    input[type="file"]::file-selector-button {
+        border: none;
+        background: #E74C3C; /* Menggunakan warna merah tema Anda */
+        color: white;
+        padding: 8px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 15px; /* Jarak antara tombol dan nama file */
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    /* 3. Efek Hover pada tombol file */
+    input[type="file"]::file-selector-button:hover {
+        background: #c0392b; /* Warna lebih gelap saat hover */
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+
+    /* 2. Merapikan Bagian 'Currently' & 'Clear' */
+    /* Ini membungkus teks link gambar & checkbox dalam kotak rapi */
+    .form-row p.file-upload {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0 0 5px 0;
+        background: #fff;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px; /* Jarak antar elemen */
+    }
+
+    /* Warnai link nama file */
+    .form-row p.file-upload a {
+        color: #E74C3C;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    /* Hapus baris baru (<br>) bawaan Django yang bikin layout rusak */
+    .form-row p.file-upload > br { 
+        display: none; 
+    }
+
+    /* Reset Label khusus untuk checkbox 'Clear' */
+    /* Agar tidak ikut gaya label utama yang Bold & Uppercase */
+    .form-row .clearable-file-input label {
+        display: inline-block !important;
+        margin: 0 !important;
+        font-size: 13px !important;
+        text-transform: none !important;
+        font-weight: normal !important;
+        width: auto !important;
+        color: #333;
+    }
+    /* Hilangkan link widget bawaan django (add/edit related) agar bersih */
+    .related-widget-wrapper-link { display: none !important; }
+
+    /* =========================================
+       4. TOGGLE SWITCH (CHECKBOX) - PERBAIKAN
+       ========================================= */
+    .checkbox-wrapper {
+        display: flex;
+        flex-direction: column; /* Susun Label di atas, Switch di bawah */
+        justify-content: flex-start;
+        width: 100%;
+    }
+    
+    /* Paksa label di atas toggle agar terlihat & gayanya sama dengan label input lain */
+    .checkbox-wrapper label.vCheckboxLabel { 
+        display: block !important; /* Pastikan muncul */
+        color: #7f8c8d;
+        font-weight: 700; 
+        font-size: 13px;
+        text-transform: uppercase; 
+        letter-spacing: 0.8px;
+        margin-bottom: 12px; /* Jarak yang sama dengan label input lain */
+    }
+
+    /* Container palsu untuk switch agar tingginya sama dengan input text (50px) */
+    .toggle-container {
+        /* Ubah height tetap menjadi min-height agar konsisten dengan input */
+        min-height: 50px; 
+        height: auto;
+        
+        display: flex;
+        align-items: center; 
+    }
+
+    .checkbox-row input[type=checkbox] { display: none; }
+    
+    .checkbox-row label.toggle-btn {
+        cursor: pointer; text-indent: -9999px; width: 55px; height: 30px;
+        background: #bdc3c7; display: block; border-radius: 100px; 
+        position: relative; transition: 0.3s;
+        margin: 0; /* Reset margin */
+    }
+    .checkbox-row label.toggle-btn:after {
+        content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px;
+        background: #fff; border-radius: 90px; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .checkbox-row input:checked + label.toggle-btn { background: #E74C3C; }
+    .checkbox-row input:checked + label.toggle-btn:after { left: calc(100% - 3px); transform: translateX(-100%); }
+    .checkbox-row label.toggle-btn:active:after { width: 32px; }
+    
+    /* Sembunyikan label text default di sebelah checkbox */
+    .form-row.field-is_active label.vCheckboxLabel { display: none; }
+
+
+    /* =========================================
+       5. BUTTONS & UTILS
+       ========================================= */
+    .submit-row {
+        background: #f8f9fa; padding: 25px; margin-top: 50px;
+        border-radius: 12px; display: flex; justify-content: flex-end; 
+        gap: 15px; align-items: center; border: 1px solid #eee;
+    }
+    
+    .submit-row input[type=submit].default, .submit-row input[name="_save"] {
+        background: linear-gradient(135deg, #E74C3C 0%, #c0392b 100%);
+        color: white; border: none; padding: 14px 40px; border-radius: 8px;
+        font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+        cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+    }
+    .submit-row input[name="_save"]:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3); }
+    
+    .submit-row input[type=submit]:not(.default) {
+        background: white; color: #555; border: 1px solid #ddd; padding: 14px 25px;
+        border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.3s;
+    }
+    .submit-row input[type=submit]:not(.default):hover { background: #f1f1f1; color: #333; }
+    
+    /* Tombol Delete Custom */
+    .submit-row .deletelink {
+        margin-right: auto; background: white; color: #E74C3C !important;  
+        border: 2px solid #E74C3C; padding: 12px 25px; border-radius: 8px;
+        font-weight: 700; font-size: 14px; text-decoration: none;
+        text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        display: inline-flex; align-items: center; justify-content: center; height: auto;
+    }
+    .submit-row .deletelink:hover { 
+        background-color: #E74C3C; color: white !important;
+        transform: translateY(-2px); box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .errornote { background: #ffecec; color: #E74C3C; padding: 15px; border-radius: 8px; border: 1px solid #ffcccc; margin-bottom: 20px; font-weight: bold; }
+    .errorlist { color: #E74C3C; margin: 5px 0 0 0; padding: 0; list-style: none; font-size: 12px;}
+    .inline-group { display: none !important; } /* Sembunyikan inline jika ada */
+
+    /* Responsive: 1 Kolom di HP */
+    @media (max-width: 768px) {
+        .module.aligned { grid-template-columns: 1fr; } 
+    }
+
+    .flex-fill {
+        /* Opsi 1: PADDING (Jarak ke dalam) */
+        /* Ini akan memberi jarak antara batas grid dengan Input/Label di dalamnya */
+        padding: 10px; 
+
+        /* Opsi 2: MARGIN (Jarak ke luar) */
+        /* Ini akan memberi jarak antar container kiri dan kanan */
+        /* margin-right: 15px; */ /* (Opsional jika ingin renggang antar kolom) */
+        
+        /* Pastikan box-sizing aktif agar ukuran tidak melebar aneh */
+        box-sizing: border-box;
+        
+        /* Agar tinggi container mengikuti isinya */
+        height: 100%; 
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="form-card">
+        
+        <div class="page-header">
+            <h2>
+                {% if add %}
+                    <i class="fas fa-plus-circle" style="color:#E74C3C; margin-right:10px;"></i> 
+                    Tambah {{ opts.verbose_name|capfirst }} Baru
+                {% else %}
+                    <i class="fas fa-edit" style="color:#E74C3C; margin-right:10px;"></i>
+                    Edit {{ opts.verbose_name|capfirst }}
+                {% endif %}
+            </h2>
+        </div>
+
+        <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>
+            {% csrf_token %}
+            {% block form_top %}{% endblock %}
+
+            {% if errors %}
+                <p class="errornote">
+                    {% if errors|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
+                </p>
+                {{ adminform.form.non_field_errors }}
+            {% endif %}
+
+            {% block field_sets %}
+                {% for fieldset in adminform %}
+                    <div class="module aligned {{ fieldset.classes }}">
+                        {% for line in fieldset %}
+                            {% for field in line %}
+                            <div class="form-row{% if line.fields|length == 1 and line.errors %} errors{% endif %}{% if not line.has_visible_field %} hidden{% endif %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}">
+                                {% if line.fields|length == 1 %}{{ line.errors }}{% endif %}
+                                    
+                                    {% if field.field.field.widget.input_type == 'checkbox' %}
+                                        <div class="checkbox-wrapper checkbox-row">
+                                            <label class="vCheckboxLabel">{{ field.field.label }}</label>
+                                            
+                                            <div class="toggle-container">
+                                                {{ field.field }}
+                                                <label for="{{ field.field.id_for_label }}" class="toggle-btn">Toggle</label>
+                                            </div>
+                                            
+                                            {% if field.field.help_text %}
+                                                <div class="help" style="margin-top:5px; color:#999; font-size:12px;">{{ field.field.help_text|safe }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="flex-fill">
+                                            {{ field.label_tag }}
+                                            {{ field.field }}
+                                            {% if field.field.help_text %}
+                                                <div class="help" style="margin-top:5px; color:#999; font-size:12px;">{{ field.field.help_text|safe }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% endblock %}
+
+            {% block after_field_sets %}{% endblock %}
+            {% block inline_field_sets %}{% endblock %}
+            {% block after_related_objects %}{% endblock %}
+
+            {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+            
+            {% block admin_change_form_document_ready %}
+                <script id="django-admin-form-add-constants" src="{% static 'admin/js/change_form.js' %}"
+                    {% if adminform and add %} data-model-name="{{ opts.model_name }}" {% endif %} async>
+                </script>
+            {% endblock %}
+            {% prepopulated_fields_js %}
+        </form>
+    </div>
+</div>
+{% endblock %}

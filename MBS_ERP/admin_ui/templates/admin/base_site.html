@@ -1,0 +1,284 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}MBS ERP Admin{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.cdnfonts.com/css/metropolis-2" rel="stylesheet">
+    
+    <style>
+        /* 1. PAKSA MATIKAN DARK MODE & WARNA BAWAAN DJANGO */
+        :root, body[data-theme="dark"], body[data-theme="light"] {
+            --primary: #E74C3C !important;
+            --secondary: #c0392b !important;
+            
+            /* Paksa Sidebar jadi MERAH */
+            --navigation-bg: #E74C3C !important; 
+            --sidebar-bg: #E74C3C !important;
+            
+            --header-bg: #E74C3C !important;
+            --link-fg: #ffffff !important;
+            --body-bg: #f4f6f9 !important;
+            --darkened-bg: #f4f6f9 !important; 
+        }
+
+        /* 2. ATUR ULANG LAYOUT & HILANGKAN SCROLL HORIZONTAL */
+        html, body{
+            margin: 0; padding: 0;
+            font-family: 'Metropolis', sans-serif !important;
+            background-color: #f4f6f9;
+            overflow-x: hidden; /* [FIX] HILANGKAN SCROLL HORIZONTAL */
+        }
+
+        /* Geser konten utama */
+        #container {
+            margin-left: 260px !important;
+            width: calc(100% - 260px) !important;
+            padding: 0 !important;
+            background: transparent !important;
+        }
+
+        /* Sembunyikan Elemen Bawaan Django */
+        #header { display: none !important; } 
+        #toggle-nav-sidebar { display: none !important; } 
+        .skip-to-content-link { display: none; } 
+
+        /* 3. DESAIN SIDEBAR CUSTOM */
+        .custom-sidebar {
+            width: 260px;
+            height: 100vh;
+            background-color: #E74C3C; 
+            position: fixed;
+            top: 0; left: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo Area */
+        .sidebar-brand {
+            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: white !important;
+            border-bottom: none; /* [FIX] HILANGKAN GARIS BAWAH */
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .sidebar-brand i { margin-right: 10px; }
+
+        /* Menu List */
+        .sidebar-menu { 
+            padding: 0; margin: 0; list-style: none; 
+            flex-grow: 1; 
+        }
+        
+        .sidebar-heading {
+            padding: 1px 25px 5px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: rgba(255,255,255,0.9) !important;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: #fff !important;
+            font-weight: 700;
+            border-left: 4px solid #fff;
+            padding-left: 30px; 
+        }
+
+        .sidebar-link i { width: 25px; text-align: center; margin-right: 10px; }
+
+        /* Footer Sidebar */
+        .sidebar-footer {
+            padding: 10px;
+            border-top: none; /* [FIX] HILANGKAN GARIS ATAS */
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Tombol Balik ke Sales (Class ini sudah dihapus dari HTML) */
+        .btn-sales {
+            display: block;
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            color: white !important;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .btn-sales:hover { background: white; color: #E74C3C !important; }
+        
+        /* FIX LOGOUT LINK (UKURAN LEBIH BESAR & BER-BORDER) */
+        .sidebar-footer a.logout-link {
+            text-decoration: none !important; 
+            font-size: 13px; 
+            padding: 8px 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 6px; 
+            transition: all 0.3s; 
+            color: white; 
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px; 
+        }
+
+        .sidebar-footer a.logout-link:hover {
+            background-color: rgba(255, 255, 255, 0.15); 
+            border-color: white; 
+            color: white !important;
+        }
+
+        /* 4. PERBAIKAN KONTEN HALAMAN */
+        div.breadcrumbs {
+            background: white;
+            padding: 10px 30px; 
+            border-bottom: 1px solid #eee;
+            margin-bottom: 0px; 
+            font-size: 13px;
+            color: #666;
+        }
+        div.breadcrumbs a { color: #E74C3C !important; font-weight: bold; }
+        
+        #content-main { padding: 20px 30px 30px 30px; }
+        
+        .object-tools a.addlink {
+            background-color: #E74C3C !important;
+            border-radius: 5px;
+        }
+
+        div.clear {
+            display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            clear: none !important;
+            visibility: hidden !important;
+        }
+
+        /* HAPUS GARIS / BAR BIRU HEADER TABEL */
+        #result_list thead th.sortable a,
+        #result_list thead th a {
+            border-bottom: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        #result_list thead th a:focus,
+        #result_list thead th a:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        #result_list thead th::after,
+        #result_list thead th.sortable::after {
+            display: none !important;
+            content: none !important;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('div.clear').forEach(el => el.remove());
+        });
+    </script>
+
+{% endblock %}
+
+{% block nav-global %}{% endblock %} 
+{% block branding %}{% endblock %} 
+
+{# SIDEBAR CUSTOM #}
+{% block nav-sidebar %}
+<div class="custom-sidebar">
+    
+    <a href="{% url 'admin:index' %}" class="sidebar-brand">
+        <i class="fas fa-rocket"></i> MBS ERP
+    </a>
+
+    <ul class="sidebar-menu">
+        
+        <li>
+            <a href="{% url 'admin:index' %}" class="sidebar-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+
+        {% for app in available_apps %}
+            
+            <li class="sidebar-heading">{{ app.name }}</li>
+            
+            {% for model in app.models %}
+            <li>
+                <a href="{{ model.admin_url }}" class="sidebar-link">
+                    {% if model.object_name == 'User' %} <i class="fas fa-user"></i>
+                    {% elif model.object_name == 'Group' %} <i class="fas fa-users"></i>
+                    {% elif model.object_name == 'Product' %} <i class="fas fa-box"></i>
+                    {% elif model.object_name == 'Brand' %} <i class="fas fa-tag"></i>
+                    {% elif model.object_name == 'Category' %} <i class="fas fa-list"></i>
+                    {% elif model.object_name == 'Vendor' %} <i class="fas fa-truck"></i>
+                    
+                    {% elif model.object_name == 'ProductChangeLog' %} <i class="fas fa-history"></i>
+                    {% elif model.object_name == 'VendorProductPricingLog' %} <i class="fas fa-file-invoice-dollar"></i>
+                    {% elif model.object_name == 'VendorProduct' %} <i class="fas fa-dolly"></i>
+
+                    {% else %} <i class="fas fa-circle" style="font-size:8px;"></i>
+                    {% endif %}
+                    
+                    {{ model.name }}
+                </a>
+            </li>
+            {% endfor %}
+
+        {% endfor %}
+
+    </ul>
+
+    <div class="sidebar-footer">
+        
+        <div style="margin-top: 15px; font-size: 11px; text-align: center; color: rgba(255,255,255,0.7);">
+            Logged as: <b>{{ user.username|upper }}</b><br>
+            
+            <form id="sidebar-logout-form" action="{% url 'admin:logout' %}" method="post" style="display: none;">
+                {% csrf_token %}
+            </form>
+            
+            <a href="#" 
+               onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();" 
+               class="logout-link" 
+               style="color: white; cursor: pointer;">
+                
+                <i class="fas fa-sign-out-alt" style="margin-right: 5px;"></i> Logout
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

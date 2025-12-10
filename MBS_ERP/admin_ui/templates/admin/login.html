@@ -1,0 +1,193 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | MBS ERP</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.cdnfonts.com/css/metropolis-2" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Metropolis', sans-serif;
+            background-color: #FFEFEF; /* Warna pink muda sesuai desain */
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Mencegah scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Putih di Atas */
+        .top-header {
+            background-color: white;
+            padding: 15px 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            width: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Container Utama */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0 5%;
+        }
+
+        /* Card Login */
+        .login-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            background-color: white;
+        }
+
+        .login-title {
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+            font-size: 2rem;
+        }
+
+        /* Form Controls */
+        .form-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.1);
+            border-color: #E53935;
+        }
+
+        /* Tombol Login Merah */
+        .btn-login {
+            background-color: #E53935; 
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            background-color: #c62828;
+            color: white;
+        }
+
+        /* Gambar Ilustrasi */
+        .illustration-col {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .illustration-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .illustration-col { display: none; }
+            .top-header { padding: 15px 20px; }
+            .login-card { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <img src="{% static 'img/logo_mbs.png' %}" 
+             alt="MBS ERP" 
+             style="height: 40px; width: auto;">
+    </div>
+
+    <div class="container-fluid main-container">
+        <div class="row w-100 align-items-center">
+            
+            <div class="col-md-5 d-flex justify-content-center justify-content-md-end pe-md-5">
+                <div class="card login-card">
+                    <h2 class="login-title">Log in</h2>
+                    
+                    {% if form.errors and not form.non_field_errors %}
+                        <div class="alert alert-danger p-2 small mb-3 text-center border-0 bg-danger text-white bg-opacity-75">
+                            Username atau password salah. Silakan coba lagi.
+                        </div>
+                    {% endif %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger p-2 small mb-3 text-center border-0 bg-danger text-white bg-opacity-75">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form action="{{ app_path }}" method="post" id="login-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_username" class="form-label">USERNAME</label>
+                            <input type="text" name="username" class="form-control" 
+                                   id="id_username" placeholder="Masukkan username" required autofocus>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label">PASSWORD</label>
+                            <input type="password" name="password" class="form-control" 
+                                   id="id_password" placeholder="Masukkan password" required>
+                        </div>
+
+                        <input type="hidden" name="next" value="{{ next }}">
+
+                        <div class="d-grid pt-2">
+                            <button type="submit" class="btn btn-login">LOGIN</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-7 illustration-col">
+                <img src="{% static 'img/Honeywell_Indonesia.svg' %}" 
+                     alt="Login Illustration" 
+                     class="illustration-img">
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
