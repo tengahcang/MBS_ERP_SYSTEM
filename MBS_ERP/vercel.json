@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "MBS_ERP/wsgi.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    
+    { "src": "/(.*)", "dest": "MBS_ERP/wsgi.py" }
+  ]
+}
