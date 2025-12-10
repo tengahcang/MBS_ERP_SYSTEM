@@ -15,7 +15,7 @@ venv/
 
 # Django-spesific files
 # Menghindari file media yang diupload
-/media/
+*.media/
 
 # IDE/Editor temporary files (Optional, tergantung IDE Anda)
 .idea/
