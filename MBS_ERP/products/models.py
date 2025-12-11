@@ -63,3 +63,11 @@ class ProductChangeLog(models.Model):
 
     def __str__(self):
         return f"{self.product.product_code} ({self.change_date})"
+    pass
+    
+class LatestProduct(Product):
+    """Model proxy untuk menampilkan produk terbaru."""
+    class Meta:
+        proxy = True
+        # verbose_name = "Produk Terbaru"
+        # verbose_name_plural = "Produk Terbaru"

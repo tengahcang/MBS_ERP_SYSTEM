@@ -42,7 +42,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_ui',
+    # 'admin_ui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,7 +52,10 @@ INSTALLED_APPS = [
     'accounts',
     # 'core',
     'products',
-    'vendors'
+    'vendors',
+    'customers',
+    'projects',
+    'quotations',
 ]
 
 MIDDLEWARE = [

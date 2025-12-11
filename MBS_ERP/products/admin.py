@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Brand, Category, Product, ProductChangeLog
+from .models import Brand, Category, Product, ProductChangeLog, LatestProduct
 from vendors.models import VendorProduct, VendorProductPricingLog
 # Register your models here.
 
@@ -26,7 +26,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdminDefault(admin.ModelAdmin):
     list_display = ("product_code", "name", "brand", "product_img_display", "category", "selling_price_idr", "is_active")
     list_filter = ("brand", "category", "is_active")
     search_fields = ("product_code", "name")
@@ -84,6 +84,7 @@ class ProductAdmin(admin.ModelAdmin):
                             )
 
         super().save_related(request, form, formsets, change)
+# admin.site.register(Product, ProductAdminDefault)
 
 
 @admin.register(ProductChangeLog)
@@ -91,3 +92,37 @@ class ProductChangeLogAdmin(admin.ModelAdmin):
     list_display = ("product", "changed_by", "change_date")
     list_filter = ("product__name", "change_date")
     search_fields = ("product__name", "old_value", "new_value")
+    
+@admin.register(LatestProduct) # Daftarkan model proxy LatestProduct
+class ProductLatestAdmin(admin.ModelAdmin):
+    # HANYA tampilkan field yang diminta dan urutkan
+    list_display = (
+        "name", 
+        "product_img_display", 
+        "selling_price_idr", 
+        "updated_at"
+    )
+    ordering = ("-updated_at",) 
+    
+    # Nonaktifkan fungsionalitas tambah/edit/hapus jika ini hanya untuk tampilan
+    def has_add_permission(self, request, obj=None):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+        
+    # Salin metode-metode tampilan dari ProductAdminDefault
+    def selling_price_idr(self, obj):
+        if obj.selling_price is None:
+            return "-"
+        return f"Rp {obj.selling_price:,.0f}".replace(",", ".")
+    # selling_price_idr.short_description = "Harga Jual (IDR)"
+    
+    def product_img_display(self, obj):
+        if obj.product_img:
+            return format_html('<img src="{}" style="height:40px;"/>', obj.product_img.url)
+        return "-"
+    # product_img_display.short_description = "Gambar"
