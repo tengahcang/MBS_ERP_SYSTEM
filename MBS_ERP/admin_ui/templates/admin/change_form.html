@@ -15,7 +15,21 @@
        ========================================= */
     #content-main { border: none !important; background: transparent !important; padding: 0 !important; }
     #content > h1 { display: none !important; }
+    .form-card *, 
+    .submit-row *, 
+    .inline-related *,
+    .inline-related tbody tr {
+        transition: none !important; /* Matikan transisi halus */
+        transform: none !important;  /* Matikan efek tombol/baris naik turun */
+    }
 
+    /* Hapus efek bayangan berlebih saat hover jika mengganggu */
+    .submit-row input:hover, 
+    .submit-row .deletelink:hover,
+    .inline-related tbody tr:hover {
+        box-shadow: none !important;
+        background-color: transparent !important; /* Hapus warna background hover baris */
+    }
     .form-card {
         background: white; 
         border-radius: 12px;
@@ -36,13 +50,18 @@
     .page-header h2 {
         margin: 0; color: #2c3e50; font-weight: 800; font-size: 1.8rem;
     }
+    #content > h1, 
+    #content > h2 { 
+        display: none !important; 
+        height: 0 !important;
+        overflow: hidden !important;
+    }
 
     /* =========================================
        2. GRID SYSTEM (KUNCI PERUBAHAN)
        ========================================= */
     .module.aligned {
         display: grid;
-        /* Ubah auto-fit menjadi 1fr 1fr untuk memaksa 2 kolom yang sama lebar */
         grid-template-columns: 1fr 1fr; 
         gap: 30px; 
         width: 100%;
@@ -58,8 +77,6 @@
         box-sizing: border-box; 
     }
 
-    /* Full Width Fields: Description, Alamat, Notes, Keterangan */
-    /* Menambahkan grid-column span 2 agar melebar ke kanan */
     .field-description, .field-address, .field-notes, .field-keterangan, .field-deskripsi {
         grid-column: 1 / -1; 
         width: 100%;
@@ -92,15 +109,14 @@
         background-color: #fcfcfc;
         font-size: 15px; color: #2c3e50;
         
-        /* PENTING: Jarak antar baris agar huruf 'g' aman */
         line-height: 1.5; 
 
         box-sizing: border-box; 
         transition: all 0.3s ease; 
         
-        /* HAPUS height: 50px; GANTI DENGAN INI: */
+
         height: auto; 
-        min-height: 50px; /* Minimal tinggi 50px, tapi bisa membesar jika perlu */
+        min-height: 50px; 
     }
 
     textarea {
@@ -169,8 +185,6 @@
         box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
     }
 
-    /* 2. Merapikan Bagian 'Currently' & 'Clear' */
-    /* Ini membungkus teks link gambar & checkbox dalam kotak rapi */
     .form-row p.file-upload {
         font-size: 13px;
         color: #64748b;
@@ -192,13 +206,10 @@
         text-decoration: none;
     }
 
-    /* Hapus baris baru (<br>) bawaan Django yang bikin layout rusak */
     .form-row p.file-upload > br { 
         display: none; 
     }
 
-    /* Reset Label khusus untuk checkbox 'Clear' */
-    /* Agar tidak ikut gaya label utama yang Bold & Uppercase */
     .form-row .clearable-file-input label {
         display: inline-block !important;
         margin: 0 !important;
@@ -208,11 +219,10 @@
         width: auto !important;
         color: #333;
     }
-    /* Hilangkan link widget bawaan django (add/edit related) agar bersih */
     .related-widget-wrapper-link { display: none !important; }
 
     /* =========================================
-       4. TOGGLE SWITCH (CHECKBOX) - PERBAIKAN
+       4. TOGGLE SWITCH (CHECKBOX)
        ========================================= */
     .checkbox-wrapper {
         display: flex;
@@ -231,10 +241,7 @@
         letter-spacing: 0.8px;
         margin-bottom: 12px; /* Jarak yang sama dengan label input lain */
     }
-
-    /* Container palsu untuk switch agar tingginya sama dengan input text (50px) */
     .toggle-container {
-        /* Ubah height tetap menjadi min-height agar konsisten dengan input */
         min-height: 50px; 
         height: auto;
         
@@ -301,21 +308,14 @@
 
     .errornote { background: #ffecec; color: #E74C3C; padding: 15px; border-radius: 8px; border: 1px solid #ffcccc; margin-bottom: 20px; font-weight: bold; }
     .errorlist { color: #E74C3C; margin: 5px 0 0 0; padding: 0; list-style: none; font-size: 12px;}
-    .inline-group { display: none !important; } /* Sembunyikan inline jika ada */
-
     /* Responsive: 1 Kolom di HP */
     @media (max-width: 768px) {
         .module.aligned { grid-template-columns: 1fr; } 
     }
 
     .flex-fill {
-        /* Opsi 1: PADDING (Jarak ke dalam) */
-        /* Ini akan memberi jarak antara batas grid dengan Input/Label di dalamnya */
         padding: 10px; 
 
-        /* Opsi 2: MARGIN (Jarak ke luar) */
-        /* Ini akan memberi jarak antar container kiri dan kanan */
-        /* margin-right: 15px; */ /* (Opsional jika ingin renggang antar kolom) */
         
         /* Pastikan box-sizing aktif agar ukuran tidak melebar aneh */
         box-sizing: border-box;
@@ -325,6 +325,247 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+    }
+
+    /* =========================================
+       6. STYLING UNTUK INLINE (VENDOR PRODUCT)
+       ========================================= */
+    .inline-group {
+        display: block !important;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #e5e7eb; /* Border halus */
+        border-radius: 16px; /* Lebih rounded */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02); /* Bayangan sangat halus */
+        margin-top: 40px;
+        overflow: hidden; /* Agar radius header tidak bocor */
+        padding: 0 !important;
+    }
+
+    .inline-group h2 {
+        font-size: 14px;
+        background: #fff; /* Ubah dari merah blok menjadi putih bersih */
+        color: #111827; /* Teks gelap */
+        padding: 20px 30px;
+        margin: 0;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        align-items: center;
+    }
+
+    .inline-group h2::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #E74C3C;
+        margin-right: 12px;
+        border-radius: 4px;
+    }
+
+    /* Styling Tabel Inline */
+    .inline-related fieldset { margin: 0; width: 100%; }
+    
+    .inline-related table {
+       width: 100%;
+        border-collapse: collapse !important;
+        border-spacing: 0;
+        display: table !important;/* Pastikan perilaku tabel */
+    }
+    .inline-related thead { display: table-header-group !important; }
+    /* Header Tabel */
+    .inline-related thead th {
+        white-space: nowrap;
+        width: auto;
+        padding: 15px 20px;
+        text-align: left;
+        background: #fcfcfc;
+        color: #95a5a6;
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        
+        border: none !important;        /* Hapus semua border */
+        border-bottom: none !important; /* Pastikan garis bawah hilang */
+        border-top: none !important;
+
+    }
+
+    /* Isi Tabel */
+    .inline-related tbody tr {
+        display: table-row !important;
+        
+        /* UBAH INI: Hilangkan border bawah antar baris */
+        border-bottom: none !important; 
+        
+        transition: background-color 0.2s ease;
+    }
+    .inline-related tbody tr:hover {
+        background-color: #fafafa; /* Efek hover halus */
+    }
+    .inline-related tbody td {
+        display: table-cell !important;
+        vertical-align: middle;
+        padding: 15px 20px;
+        white-space: nowrap;
+        border-left: none !important;
+        border-right: none !important;
+
+        /* INI BAGIAN PENTINGNYA */
+        border: none !important;        /* Hapus border utama */
+        border-bottom: none !important; /* Hapus garis pembatas bawah */
+        border-top: none !important;    /* Hapus garis pembatas atas */
+        border-left: none !important;   /* Hapus garis vertikal kiri */
+        border-right: none !important;
+    }
+    
+    .inline-related tbody td:first-child {
+        border-left: 1px solid #eaeff2;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    
+    .inline-related tbody td:last-child {
+        border-right: 1px solid #eaeff2;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .inline-related input[type=text], 
+    .inline-related input[type=number], 
+    .inline-related select {
+        width: 100%;
+        min-height: 40px;
+        padding: 8px 12px;
+        margin: 0;
+    }
+
+    /* Tombol Delete di Inline */
+    .inline-related .delete input { 
+        margin-left: 10px; 
+    }
+
+    /* Add Another Row Link */
+    .add-row {
+        padding: 15px 0;
+        border-top: 1px solid #eaeff2;
+    }
+    .add-row a {
+        color: #E74C3C;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 13px;
+    }
+    .inline-related input:not([type=checkbox]), 
+    .inline-related select {
+        width: 100% !important;
+        min-width: 150px;
+        max-width: 350px; /* Batasi lebar agar proporsional */
+        height: 42px !important;
+        
+        /* Style Input Modern (Sama dengan form utama) */
+        padding: 8px 12px;
+        border: 2px solid #eaeff2;
+        border-radius: 6px;
+        background-color: #fff;
+        font-size: 14px;
+        color: #2c3e50;
+        margin: 0 !important;
+        transition: all 0.3s ease;
+        box-shadow: none;
+    }
+    .inline-related td.delete {
+        width: 100px; /* Lebarkan sedikit kolomnya */
+        text-align: center;
+        vertical-align: middle !important;
+    }
+    .inline-related .inline-deletelink {
+        /* Reset style bawaan Django */
+        background-image: none !important; 
+        text-indent: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        
+        /* Style Tombol Merah (Mirip Save) */
+        background: #E74C3C; 
+        color: white !important;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(231, 76, 60, 0.2);
+        cursor: pointer;
+        line-height: 1.2;
+    }
+    .inline-related .inline-deletelink:hover {
+        background: #c0392b;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+    }
+    .inline-related td.delete input[type="checkbox"] {
+        /* Opsional: Membuat checkbox lebih terlihat jika masih ada */
+        accent-color: #E74C3C;
+        width: 18px; 
+        height: 18px;
+        cursor: pointer;
+    }
+    .inline-related td.delete div {
+        justify-content: center;
+    }
+    .inline-related input:focus, 
+    .inline-related select:focus {
+        border-color: #E74C3C;
+        background: #fff;
+        outline: none;
+    }
+    .inline-related td.delete input[type=checkbox] {
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+        accent-color: #E74C3C;
+    }
+    /* 8. Tombol "Add Another Row" */
+    .add-row {
+        padding: 15px 25px;
+        border-top: 1px solid #eaeff2;
+        background: #fff;
+    }
+    .add-row a {
+        background: none !important; /* Hapus background icon bawaan Django */
+        background-image: none !important;
+        padding-left: 0 !important; /* Hapus padding bekas tempat icon */
+        padding: 10px 15px !important;
+        
+        color: #E74C3C !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        font-size: 12px;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .add-row a:before, 
+    .add-row a:after {
+        content: none !important;
+        display: none !important;
+        background: none !important;
+        width: 0 !important;
+    }
+    .add-row a i, 
+    .add-row a svg {
+        display: none !important;
+    }
+    .add-row a:hover { 
+        color: #c0392b !important; 
+        background-color: #f9f9f9 !important; /* Efek hover tipis di background */
+        border-radius: 6px;
     }
 </style>
 
@@ -393,16 +634,47 @@
             {% endblock %}
 
             {% block after_field_sets %}{% endblock %}
-            {% block inline_field_sets %}{% endblock %}
+            {% block inline_field_sets %}
+                {% for inline_admin_formset in inline_admin_formsets %}
+                    {% include inline_admin_formset.opts.template %}
+                {% endfor %}
+            {% endblock %}
             {% block after_related_objects %}{% endblock %}
 
             {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
             
             {% block admin_change_form_document_ready %}
+            
                 <script id="django-admin-form-add-constants" src="{% static 'admin/js/change_form.js' %}"
                     {% if adminform and add %} data-model-name="{{ opts.model_name }}" {% endif %} async>
                 </script>
+                
+                <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Script untuk mencari dan menyembunyikan pesan error teknis
+                    const errorNotes = document.querySelectorAll('.errornote, .errorlist li');
+                    errorNotes.forEach(function(el) {
+                        const text = el.innerText.toLowerCase();
+                        // Cek apakah text error mengandung kata-kata teknis ManagementForm
+                        if (text.includes('managementform data is missing') || 
+                            text.includes('vendorproduct_set-total_forms') ||
+                            text.includes('hidden field total_forms') ||
+                            text.includes('hidden field initial_forms')) {
+                            
+                            // Sembunyikan elemen error tersebut
+                            el.style.display = 'none';
+                            
+                            // Jika errornya ada di dalam list (ul > li) dan list jadi kosong, sembunyikan container listnya juga
+                            if (el.tagName === 'LI' && el.parentElement.innerText.trim() === el.innerText.trim()) {
+                                el.parentElement.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+                </script>
+
             {% endblock %}
+            
             {% prepopulated_fields_js %}
         </form>
     </div>
