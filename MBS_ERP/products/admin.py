@@ -29,7 +29,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdminDefault(admin.ModelAdmin):
     list_display = ("product_code", "name", "brand", "product_img_display", "category", "selling_price_idr", "is_active")
     list_filter = ("brand", "category", "is_active")
-    search_fields = ("product_code", "name")
+    search_fields = ("product_code", "name", "brand")
     
     inlines = [ProductVendorInline]
     

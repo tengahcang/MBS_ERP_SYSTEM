@@ -5,6 +5,7 @@ from .models import Quotation, QuotationItem
 class QuotationItemInline(admin.TabularInline):
     model = QuotationItem
     extra = 1
+    autocomplete_fields = ["product"]
 
 class QuotationAdmin(admin.ModelAdmin):
     list_display = ("quote_number", "project", "status", "date")
