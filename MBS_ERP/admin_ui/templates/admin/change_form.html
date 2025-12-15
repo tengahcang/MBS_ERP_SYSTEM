@@ -30,6 +30,8 @@
         box-shadow: none !important;
         background-color: transparent !important; /* Hapus warna background hover baris */
     }
+
+    
     .form-card {
         background: white; 
         border-radius: 12px;
@@ -220,6 +222,7 @@
         color: #333;
     }
     .related-widget-wrapper-link { display: none !important; }
+
 
     /* =========================================
        4. TOGGLE SWITCH (CHECKBOX)
@@ -567,6 +570,536 @@
         background-color: #f9f9f9 !important; /* Efek hover tipis di background */
         border-radius: 6px;
     }
+    /* 1. Container Utama (Kotak Input) */
+    .select2-container .select2-selection--single {
+        background-color: #fcfcfc !important; 
+        border: 2px solid #eaeff2 !important; 
+        border-radius: 8px !important;
+        height: 50px !important; /* Paksa height fix 50px */
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* 2. TEKS RENDERED (BAGIAN PERBAIKAN UTAMA) */
+    /* Kita gunakan selector ID Wildcard agar menang melawan style bawaan */
+    span.select2-selection__rendered,
+    span.select2-selection__rendered[id*="select2-"] {
+        color: #2c3e50 !important;         /* Warna Teks Dark Blue */
+        -webkit-text-fill-color: #2c3e50 !important; /* Override Chrome/Safari text color */
+        opacity: 1 !important;             /* Pastikan 100% terlihat (tidak transparan) */
+        font-weight: 600 !important;       /* Sedikit pertebal agar jelas */
+        font-size: 15px !important;
+        
+        /* Positioning agar pas di tengah */
+        line-height: 50px !important;      
+        margin-top: 0 !important;
+        padding-left: 20px !important;
+        padding-right: 30px !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    /* 3. Placeholder */
+    .select2-selection__placeholder {
+        color: #7f8c8d !important;
+        opacity: 1 !important; /* Pastikan placeholder juga terlihat */
+        line-height: 50px !important;
+    }
+
+    /* 4. Panah Dropdown */
+    .select2-container .select2-selection--single .select2-selection__arrow {
+        height: 50px !important; /* Samakan tinggi dengan container */
+        top: 0 !important;
+        right: 15px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .select2-container .select2-selection--single .select2-selection__arrow b {
+        border-color: #7f8c8d transparent transparent transparent !important;
+        border-width: 6px 5px 0 5px !important; /* Pertebal panah sedikit */
+        margin-top: 0 !important;
+    }
+
+    /* 5. State Focus */
+    .select2-container.select2-container--open .select2-selection--single {
+        border-color: #E74C3C !important;
+        background-color: white !important;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.1) !important;
+    }
+
+    /* 6. Dropdown List (Popup Pilihan) */
+    .select2-dropdown {
+        border: 2px solid #eaeff2 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        background-color: white !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        z-index: 99999 !important;
+    }
+
+    .select2-results__option {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+        color: #2c3e50 !important;
+        border-bottom: 1px solid #f5f5f5 !important;
+    }
+
+    .select2-results__option--highlighted[aria-selected] {
+        background-color: #E74C3C !important; 
+        color: white !important;
+    }
+
+
+    .inline-related th.original, 
+    .inline-related td.original {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+
+
+    /* Container shortcut (Today | Icon) */
+    .datetimeshortcuts {
+        display: flex !important;
+        align-items: center;
+        gap: 8px; /* Jarak antar elemen */
+        margin-top: 8px; /* Beri jarak dari input field */
+        font-size: 12px;
+        color: #bdc3c7; /* Warna separator pipe '|' */
+        justify-content: flex-start; /* Posisi di kiri bawah input */
+    }
+
+    /* Styling Teks "Today" */
+    .datetimeshortcuts a {
+        color: #E74C3C !important; /* Merah sesuai tema */
+        font-weight: 700;
+        text-transform: uppercase;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+        font-size: 11px;
+        transition: all 0.2s;
+    }
+    .datetimeshortcuts a:hover {
+        color: #c0392b !important;
+        text-decoration: underline;
+    }
+
+    /* Styling Ikon Kalender (Ganti icon jadul Django dengan SVG Merah Modern) */
+    .datetimeshortcuts .date-icon {
+        width: 18px !important;
+        height: 18px !important;
+        /* Menggunakan SVG inline agar tajam dan berwarna merah */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23E74C3C"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>') !important;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: inline-block;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+        opacity: 0.8;
+        cursor: pointer;
+    }
+    
+    .datetimeshortcuts .date-icon:hover {
+        opacity: 1;
+        transform: scale(1.1); /* Efek membesar sedikit saat hover */
+    }
+
+    /* Styling untuk Clock Icon (Jika ada TimeField) */
+    .datetimeshortcuts .clock-icon {
+        width: 18px !important;
+        height: 18px !important;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23E74C3C"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>') !important;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        opacity: 0.8;
+        cursor: pointer;
+    }
+
+    .form-row p.date {
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1.2 !important; /* Rapatkan jarak baris */
+        display: block !important;
+        width: 100% !important;
+    }
+    .form-row, 
+    .form-row > div, 
+    fieldset, 
+    .module, 
+    .form-card {
+        overflow: visible !important;
+        position: relative !important; /* Menjadikan ini titik 0,0 (Jangkar) */
+        z-index: auto !important;
+    }
+
+    /* 1. Container Kalender (Kotak Utama) */
+    .calendarbox, .clockbox {
+        
+       position: absolute !important;
+        z-index: 99999 !important;
+
+        margin-left: 80px !important; 
+        
+        margin-top: -25px !important;
+
+        background: #fff !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+        border-radius: 16px !important;
+        width: 231px !important;
+    }
+
+    /* Kalender START DATE (calendarbox0) -> Taruh di KIRI */
+    div#calendarbox0.module {
+        top: 640px !important;    
+        
+        /* Mengatur posisi horizontal: Tempel ke Kiri */
+        left: 920px !important;      
+        right: auto !important;  
+        
+        /* Opsional: Geser sedikit ke kanan jika terlalu mepet pinggir */
+        margin-left: 5px !important;
+    }
+
+    /* Kalender END DATE (calendarbox1) -> Taruh di KANAN */
+    div#calendarbox1.module {
+        top: 640px !important;    
+    
+        /* Mengatur posisi horizontal: Tempel ke Kanan */
+        right: 450px !important;     
+        left: auto !important;   
+        
+        margin-right: 5px !important;
+    }
+
+    /* 2. BAGIAN HEADER (MERAH) */
+    /* Trik: Kita jadikan caption tabel sebagai background merah utama */
+    .calendarbox table caption {
+        background: #E74C3C !important;
+        color: white !important;
+        font-weight: 700 !important;
+        
+        /* Kecilkan font dan padding */
+        font-size: 11px !important; 
+        padding: 10px 0 !important; /* Sebelumnya 15px */
+        
+        text-align: center !important;
+        margin: 0 !important;
+        border: none !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* 3. TOMBOL NAVIGASI (< >) */
+    /* Kita posisikan absolute agar menumpuk di atas caption */
+    .calendarbox > div:first-child {
+        position: absolute !important;
+        top: 0 !important; left: 0 !important;
+        width: 100% !important; height: 35px !important; /* Sesuaikan tinggi header */
+        background: transparent !important;
+        z-index: 10 !important;
+        pointer-events: none;
+    }
+
+    .calendarbox .calendarnav-previous, 
+    .calendarbox .calendarnav-next {
+        pointer-events: auto !important;
+        position: absolute !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: rgba(255,255,255,0.8) !important;
+        font-weight: bold !important;
+        font-size: 14px !important; /* Sebelumnya 18px */
+        text-decoration: none !important;
+        padding: 2px 8px !important;
+        transition: 0.2s;
+    }
+
+    .calendarbox .calendarnav-previous { left: 5px !important; }
+    .calendarbox .calendarnav-next { right: 5px !important; }
+    .calendarbox .calendarnav-previous:hover, 
+    .calendarbox .calendarnav-next:hover {
+        color: #fff !important;
+        background: rgba(255,255,255,0.15) !important;
+        border-radius: 4px;
+    }
+    .calendarbox th {
+        background-color: #f8f9fa !important;
+        color: #042c2f !important;
+        font-weight: 700 !important;
+        
+        /* Kecilkan padding dan font */
+        font-size: 9px !important; 
+        padding: 5px 0 !important; /* Sebelumnya 8-10px */
+        
+        border-bottom: 1px solid #eee !important;
+        text-align: center !important;
+        display: table-cell !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Pastikan baris header (tr) tidak hidden */
+    .calendarbox thead, .calendarbox thead tr {
+        display: table-row !important;
+        background: transparent !important;
+    }
+    /* 4. TABEL & GRID */
+    .calendarbox table {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 2px !important; /* Rapatkan jarak baris */
+        background: #fff !important;
+        margin: 0 !important;
+        padding-bottom: 5px !important;
+    }
+    .calendarbox table thead th,
+    .calendarbox thead th,
+    div.calendarbox table thead tr th {
+        
+        /* 1. WARNA: Kita buat kontras tinggi (Hitam di atas Abu-abu) */
+        background-color: #e5e7eb !important; /* Abu-abu solid */
+        color: #000000 !important;            /* Hitam pekat */
+        
+        /* 2. UKURAN & POSISI */
+        font-size: 12px !important;
+        font-weight: 900 !important;          /* Sangat tebal */
+        text-align: center !important;
+        padding: 8px 0 !important;
+        border-bottom: 1px solid #bdc3c7 !important;
+
+        /* 3. VISIBILITAS: Paksa muncul */
+        display: table-cell !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 10 !important;
+        text-shadow: none !important;
+    }
+
+    /* Body Kalender */
+    .calendarbox tbody td {
+        padding: 1px !important;
+        text-align: center !important;
+    }
+
+    /* Angka Tanggal (Base) */
+    .calendarbox tbody td a {
+        color: #2c3e50 !important;
+        text-decoration: none !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        
+        /* UKURAN LINGKARAN: Diperkecil agar muat di lebar 231px */
+        width: 24px !important;  /* Sebelumnya 32px */
+        height: 24px !important; /* Sebelumnya 32px */
+        font-size: 11px !important; /* Sebelumnya 13px */
+        
+        border-radius: 50% !important;
+        margin: 0 auto !important;
+        font-weight: 500 !important;
+        transition: all 0.2s;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    /* Hover State */
+    .calendarbox tbody td a:hover {
+        background: #f5f5f5 !important;
+        color: #E74C3C !important;
+    }
+
+    /* 5. TANGGAL TERPILIH / HARI INI (Lingkaran Merah Solid) */
+    /* Target desain Anda: Lingkaran penuh warna merah */
+    .calendarbox tbody td.today a {
+        background: #E74C3C !important;
+        color: white !important;
+        font-weight: 700 !important;
+        box-shadow: 0 2px 5px rgba(231, 76, 60, 0.4) !important;
+    }
+
+    .calendarbox tbody td.selected a {
+        background: #95a5a6 !important;  /* Kode warna Abu-abu (Concrete) */
+        color: white !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: 0 2px 5px rgba(149, 165, 166, 0.4) !important; /* Shadow abu-abu */
+    }
+    /* Hapus style nonday (tanggal abu-abu) */
+    .calendarbox tbody td.nonday {
+        background: transparent !important; 
+    }
+
+    /* 6. FOOTER (Shortcuts & Cancel) */
+    .calendarbox .calendar-shortcuts {
+        background: #fff !important;
+        border-top: 1px solid #f5f5f5 !important;
+        
+        /* Kecilkan padding */
+        padding: 8px 0 !important; 
+        font-size: 9px !important;
+        
+        text-align: center !important;
+        color: #ecf0f1 !important;
+    }
+    
+    .calendarbox .calendar-shortcuts a {
+        color: #E74C3C !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        margin: 0 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .calendarbox .calendar-shortcuts a:hover {
+        color: #c0392b !important;
+    }
+
+    /* Tombol Cancel */
+    .calendarbox .calendar-cancel {
+        margin: 0 !important;
+        padding: 0 0 10px 0 !important;
+        text-align: center !important;
+    }
+    .calendarbox .calendar-cancel a {
+        color: #95a5a6 !important;
+        font-size: 9px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        text-decoration: none !important;
+    }
+    .calendarbox .calendar-cancel a:hover { color: #7f8c8d !important; }
+
+    /* ============================================================
+   FORCE SHOW: MUNCULKAN TOMBOL DELETE BAWAAN
+   (Tanpa mengubah bentuk, hanya memastikan terlihat)
+   ============================================================ */
+
+/* 1. Paksa kolom delete agar terbuka lebar */
+.inline-related tbody td.delete {
+    width: 100px !important; /* Lebar cukup untuk tombol teks */
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 10px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+}
+
+/* 2. Reset semua properti yang mungkin menyembunyikan tombol/link */
+.inline-related tbody td.delete a.inline-deletelink {
+    display: inline-block !important; 
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    
+    /* Reset properti yang mungkin menyembunyikan teks */
+    text-indent: 0 !important;
+    font-size: 11px !important; 
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    
+    /* Style Tombol Merah (Sama persis dengan Customer Contact) */
+    background-color: #E74C3C !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    
+    /* Padding agar tombol proporsional */
+    padding: 8px 15px !important;
+    
+    /* Ukuran Reset (biarkan menyesuaikan padding/teks) */
+    width: auto !important; 
+    height: auto !important;
+    
+    box-shadow: 0 2px 5px rgba(231, 76, 60, 0.2) !important;
+    cursor: pointer !important;
+}
+.inline-related tbody td.delete a.inline-deletelink:hover {
+    background-color: #c0392b !important;
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3) !important;
+    transform: translateY(-1px);
+}
+.inline-related tbody td.delete input[type="checkbox"] {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 18px !important;
+    height: 18px !important;
+    accent-color: #E74C3C !important;
+    cursor: pointer !important;
+    margin: 0 auto !important;
+}
+/* 3. Jika itu data tersimpan (Checkbox), pastikan juga muncul */
+.inline-related tbody td.delete input {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+ 
+tr.form-row td.delete,
+tr.form-row td.delete div {
+    display: table-cell !important; /* Pastikan cell tabel aktif */
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    width: auto !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* 2. Styling Tombol "REMOVE" (Merah) */
+/* Selector ini memotong jalur parent yang rumit dan langsung tembak target */
+tr.form-row td.delete a.inline-deletelink {
+    /* WAJIB: Reset properti yang menyembunyikan teks/tombol */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    text-indent: 0 !important;        /* KUNCI: Biar teks "Remove" tidak terlempar keluar */
+    font-size: 11px !important;       /* Ukuran teks */
+    width: auto !important;           /* Reset lebar fix */
+    height: auto !important;          /* Reset tinggi fix */
+    position: static !important;      /* Reset posisi aneh */
+    background-image: none !important; /* Hapus icon bawaan */
+    
+    /* Styling Tampilan (Merah Kotak seperti Customer Contact) */
+    background-color: #E74C3C !important;   
+    color: white !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    padding: 6px 12px !important;     /* Padding biar terlihat tombol */
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    margin: 0 auto !important;
+}
+
+/* 3. Efek Hover */
+tr.form-row td.delete a.inline-deletelink:hover {
+    background-color: #c0392b !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* 4. Pastikan Checkbox (untuk data lama) juga muncul dan besar */
+tr.form-row td.delete input[type="checkbox"] {
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    accent-color: #E74C3C !important;
+    cursor: pointer !important;
+}
 </style>
 
 <div class="container-fluid">

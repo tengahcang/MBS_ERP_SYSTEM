@@ -248,17 +248,22 @@
             {% for model in app.models %}
             <li>
                 <a href="{{ model.admin_url }}" class="sidebar-link">
+                    {# Authentication #}
                     {% if model.object_name == 'User' %} <i class="fas fa-user"></i>
                     {% elif model.object_name == 'Group' %} <i class="fas fa-users"></i>
+
                     {% elif model.object_name == 'Product' %} <i class="fas fa-box"></i>
                     {% elif model.object_name == 'Brand' %} <i class="fas fa-tag"></i>
                     {% elif model.object_name == 'Category' %} <i class="fas fa-list"></i>
                     {% elif model.object_name == 'Vendor' %} <i class="fas fa-truck"></i>
                     
+                    {% elif model.object_name == 'Customer' %} <i class="fas fa-user-tie"></i>  {% elif model.object_name == 'LatestProduct' %} <i class="fas fa-clock"></i> {% elif model.object_name == 'Project' %} <i class="fas fa-project-diagram"></i> {% elif model.object_name == 'Quotation' %} <i class="fas fa-file-signature"></i> {# ------------------------------ #}
+
                     {% elif model.object_name == 'ProductChangeLog' %} <i class="fas fa-history"></i>
                     {% elif model.object_name == 'VendorProductPricingLog' %} <i class="fas fa-file-invoice-dollar"></i>
                     {% elif model.object_name == 'VendorProduct' %} <i class="fas fa-dolly"></i>
 
+                    {# Default Icon jika tidak terdaftar #}
                     {% else %} <i class="fas fa-circle" style="font-size:8px;"></i>
                     {% endif %}
                     
